@@ -104,14 +104,19 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
   ) {
     // Draw wordmark
     graphics_context_set_text_color(ctx, settings.color_wordmark);
+    GTextAttributes *s_attributes = graphics_text_attributes_create();
+    // Enable circular text flow on round watches
+    #if defined(PBL_ROUND)
+      graphics_text_attributes_enable_screen_text_flow(s_attributes, 5);
+    #endif
     graphics_draw_text(
       ctx,
       "pebble",
       fonts_get_system_font(WORDMARK_FONT),
-      GRect(0, 37, bounds.size.w, 24),
+      GRect(0, (TICK_INSETS * 1.5), bounds.size.w, 24),
       GTextOverflowModeTrailingEllipsis,
       GTextAlignmentCenter,
-      0
+      s_attributes
     );
   }
 
