@@ -21,7 +21,7 @@ void draw_hand(
   GContext *ctx,
   GPoint start,
   int angle,
-  int inset,
+  int from_center,
   int length,
   int thickness,
   GColor color,
@@ -30,8 +30,8 @@ void draw_hand(
 
   // Calculate where the start point of the hand goes
   GPoint hand_start = {
-    .x = (int16_t)(sin_lookup(angle) * (int32_t)inset / TRIG_MAX_RATIO) + start.x,
-    .y = (int16_t)(-cos_lookup(angle) * (int32_t)inset / TRIG_MAX_RATIO) + start.y,
+    .x = (int16_t)(sin_lookup(angle) * (int32_t)from_center / TRIG_MAX_RATIO) + start.x,
+    .y = (int16_t)(-cos_lookup(angle) * (int32_t)from_center / TRIG_MAX_RATIO) + start.y,
   };
 
   // Calculate where the end point of the hand goes

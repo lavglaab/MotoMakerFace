@@ -2,12 +2,13 @@
 #include "layers.h"
 #include "drawing_utils.h"
 #include "settings.h"
+#include "style.h"
 
 void hands_layer_update_proc(Layer *layer, GContext *ctx) {
   GRect bounds = layer_get_unobstructed_bounds(layer);
   GPoint center = grect_center_point(&bounds);
 
-  const int16_t max_hand_length = PBL_IF_ROUND_ELSE(((bounds.size.w - 30) / 2), (bounds.size.w - 10) / 2);
+  int16_t max_hand_length = ((bounds.size.w - HAND_INSET) / 2);
 
   time_t now = time(NULL);
   struct tm *t = localtime(&now);
@@ -15,18 +16,18 @@ void hands_layer_update_proc(Layer *layer, GContext *ctx) {
   int32_t minute_angle = TRIG_MAX_ANGLE * t->tm_min / 60;
 
   // draw minute hand
-  draw_hand(ctx, center, minute_angle, 10, max_hand_length, 5, settings.color_minute_hand, settings.color_background);
+  draw_hand(ctx, center, minute_angle, HAND_WIDTH * 2, max_hand_length, HAND_WIDTH, settings.color_minute_hand, settings.color_background);
 
 
   // calculate hour hand
   int32_t hour_angle = (TRIG_MAX_ANGLE * (((t->tm_hour % 12) * 6) + (t->tm_min / 10))) / (12 * 6);
 
   // draw hour hand
-  draw_hand(ctx, center, hour_angle, 10, max_hand_length * 0.6, 5, settings.color_hour_hand, settings.color_background);
+  draw_hand(ctx, center, hour_angle, HAND_WIDTH * 2, max_hand_length * 0.6, HAND_WIDTH, settings.color_hour_hand, settings.color_background);
 
   // Draw the center dot
   graphics_context_set_fill_color(ctx, settings.color_dot);
-  graphics_fill_circle(ctx, center, 3);
+  graphics_fill_circle(ctx, center, HAND_WIDTH / 2);
 }
 
 void seconds_layer_update_proc(Layer *layer, GContext *ctx) {
@@ -39,11 +40,11 @@ void seconds_layer_update_proc(Layer *layer, GContext *ctx) {
   int32_t angle = TRIG_MAX_ANGLE * t->tm_sec / 60;
 
   // draw hand
-  draw_hand(ctx, center, angle, 10, bounds.size.h, 2, settings.color_second_hand, settings.color_background);
+  draw_hand(ctx, center, angle, HAND_WIDTH * 2, bounds.size.h, SEC_WIDTH, settings.color_second_hand, settings.color_background);
 
   // Draw the center dot
   graphics_context_set_fill_color(ctx, settings.color_dot);
-  graphics_fill_circle(ctx, center, 3);
+  graphics_fill_circle(ctx, center, HAND_WIDTH / 2);
 }
 
 void background_layer_update_proc(Layer *layer, GContext *ctx) {
@@ -61,7 +62,7 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
     int32_t angle = TRIG_MAX_ANGLE * i / 60;
 
     // draw ray
-    draw_hand(ctx, center, angle, 0, bounds.size.h, 1, settings.color_minute_markers, settings.color_background);
+    draw_hand(ctx, center, angle, 0, bounds.size.h, MINUTE_MARK_WIDTH, settings.color_minute_markers, settings.color_background);
   }
 
   // 3 6 9 o clock
@@ -70,7 +71,7 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
     int32_t angle = TRIG_MAX_ANGLE * i / 60;
 
     // draw ray
-    draw_hand(ctx, center, angle, 0, bounds.size.h, 2, settings.color_hour_markers, settings.color_background);
+    draw_hand(ctx, center, angle, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
   }
 
   // 12 o clock
@@ -78,22 +79,20 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
   if (settings.enable_double_12) {
 
     // draw double 12
-    draw_hand(ctx, (GPoint) {.x = center.x - 3, .y = center.y}, 90, 0, bounds.size.h, 2, settings.color_hour_markers, settings.color_background);
-    draw_hand(ctx, (GPoint) {.x = center.x + 3, .y = center.y}, 90, 0, bounds.size.h, 2, settings.color_hour_markers, settings.color_background);
+    draw_hand(ctx, (GPoint) {.x = center.x - HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+    draw_hand(ctx, (GPoint) {.x = center.x + HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
   } else {
     // draw single 12
-    draw_hand(ctx, center, 90, 0, bounds.size.h, 2, settings.color_hour_markers, settings.color_background);
+    draw_hand(ctx, center, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
   }
-  
-  const int16_t mark_inset = PBL_IF_ROUND_ELSE(30, 26);
 
   // erase rays beyond inset
   graphics_context_set_fill_color(ctx, settings.color_background);
   PBL_IF_ROUND_ELSE( 
-    graphics_fill_circle(ctx, center, (bounds.size.w / 2) - mark_inset),
+    graphics_fill_circle(ctx, center, (bounds.size.w / 2) - TICK_INSETS),
     graphics_fill_rect(
       ctx,
-      GRect(mark_inset, mark_inset, bounds.size.w - (2 *mark_inset), bounds.size.h - (2 * mark_inset)),
+      GRect(TICK_INSETS, TICK_INSETS, bounds.size.w - (2 *TICK_INSETS), bounds.size.h - (2 * TICK_INSETS)),
       0,
       GCornerNone
       )
@@ -108,7 +107,7 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
     graphics_draw_text(
       ctx,
       "pebble",
-      fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD),
+      fonts_get_system_font(WORDMARK_FONT),
       GRect(0, 37, bounds.size.w, 24),
       GTextOverflowModeTrailingEllipsis,
       GTextAlignmentCenter,
