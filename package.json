@@ -45,7 +45,14 @@
       "enableVibrateOnDisconnect"
     ],
     "resources": {
-      "media": []
+      "media": [
+        {
+          "menuIcon": true,
+          "type": "png",
+          "name": "menu_icon",
+          "file": "menu.png"
+        }
+      ]
     }
   }
 }
