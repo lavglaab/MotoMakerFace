@@ -111,7 +111,7 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
     #endif
     graphics_draw_text(
       ctx,
-      "pebble",
+      (watch_info_get_model() > WATCH_INFO_MODEL_PEBBLE_TIME_2) ? "core" : "pebble",
       fonts_get_system_font(WORDMARK_FONT),
       GRect(0, (TICK_INSETS * 1.5), bounds.size.w, 24),
       GTextOverflowModeTrailingEllipsis,
