@@ -9,21 +9,10 @@ static Layer *s_window_layer;
 
 static Layer *s_background_layer;
 static Layer *s_hands_layer;
-static Layer *s_seconds_layer;
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Tick handler fired");
-  // Update minute/hour hands if a minute has passed
-  if ((units_changed & MINUTE_UNIT) != 0) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "mark hands layer dirty");
-    layer_mark_dirty(s_hands_layer);
-  }
-
-  // Update seconds hand if enabled
-  if (settings.enable_second_hand) {
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "mark seconds layer dirty");
-    layer_mark_dirty(s_seconds_layer);
-  }
+  // Update hands display
+  layer_mark_dirty(s_hands_layer);
 }
 
 static void initialize_seconds() {
@@ -33,16 +22,10 @@ static void initialize_seconds() {
     // Register with TickTimerService
     tick_timer_service_subscribe(SECOND_UNIT, tick_handler);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Subscribed to tick handler for seconds");
-
-    // Show seconds layer
-    layer_set_hidden(s_seconds_layer, false);
   } else {
     // Register with TickTimerService
     tick_timer_service_subscribe(MINUTE_UNIT, tick_handler);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "Subscribed to tick handler for minutes");
-
-    // Hide seconds layer
-    layer_set_hidden(s_seconds_layer, true);
   }
 }
 
@@ -50,7 +33,6 @@ static void initialize_seconds() {
 void prv_update_display() {
   layer_mark_dirty(s_background_layer);
   layer_mark_dirty(s_hands_layer);
-  layer_mark_dirty(s_seconds_layer);
   initialize_seconds();
 }
 
@@ -78,12 +60,7 @@ static void main_window_load(Window *window) {
   layer_set_update_proc(s_hands_layer, hands_layer_update_proc);
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Hands layer added");
 
-  // Create seconds layer
-  s_seconds_layer = layer_create(bounds);
-  layer_set_update_proc(s_seconds_layer, seconds_layer_update_proc);
-  layer_add_child(s_window_layer, s_seconds_layer);
-  // Show or hide seconds layer, and
-  // subscribe to correct tick timer service
+  // Subscribe to correct tick timer service
   initialize_seconds();
 
   // Register for Bluetooth connection updates
@@ -97,7 +74,6 @@ static void main_window_load(Window *window) {
 static void main_window_unload(Window *window) {
   layer_destroy(s_background_layer);
   layer_destroy(s_hands_layer);
-  layer_destroy(s_seconds_layer);
 }
 
 static void init() {
