@@ -54,36 +54,21 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, settings.color_background);
   graphics_fill_rect(ctx, bounds, 0, GCornerNone);
 
-  // add ticks
-
-  // 5 minute marks
-  for (int i = 5; i < 60; i = i + 5) {
-    // calculate ray
-    int32_t angle = TRIG_MAX_ANGLE * i / 60;
-
-    // draw ray
-    draw_hand(ctx, center, angle, 0, bounds.size.h, MINUTE_MARK_WIDTH, settings.color_minute_markers, settings.color_background);
-  }
-
-  // 3 6 9 o clock
-  for (int i = 15; i < 60; i = i + 15) {
-    // calculate ray
-    int32_t angle = TRIG_MAX_ANGLE * i / 60;
-
-    // draw ray
-    draw_hand(ctx, center, angle, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
-  }
-
-  // 12 o clock
-  //int32_t angle = TRIG_MAX_ANGLE * 0 / 60;
-  if (settings.enable_double_12) {
-
-    // draw double 12
-    draw_hand(ctx, (GPoint) {.x = center.x - HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
-    draw_hand(ctx, (GPoint) {.x = center.x + HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
-  } else {
-    // draw single 12
-    draw_hand(ctx, center, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+  // Hour markers
+  for (int hour = 0; hour < 12; hour++) {
+    int32_t angle = TRIG_MAX_ANGLE * hour / 12; //
+    
+    if (hour == 0 && settings.enable_double_12) {
+      // Do double mark at the 12 Noon position
+      draw_hand(ctx, (GPoint) {.x = center.x - HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+      draw_hand(ctx, (GPoint) {.x = center.x + HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+    } else if (hour % 3 == 0) {
+      // We're at 0, 3, 6, or 9; do the thicker mark
+      draw_hand(ctx, center, angle, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+    } else {
+      // Do the usual thin mark
+      draw_hand(ctx, center, angle, 0, bounds.size.h, MINUTE_MARK_WIDTH, settings.color_minute_markers, settings.color_background);
+    }
   }
 
   // erase rays beyond inset
