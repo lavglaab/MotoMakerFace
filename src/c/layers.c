@@ -97,6 +97,4 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
       s_attributes
     );
   }
-
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Background layer drawn");
 }

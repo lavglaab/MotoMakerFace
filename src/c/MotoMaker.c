@@ -52,13 +52,11 @@ static void main_window_load(Window *window) {
   s_background_layer = layer_create(bounds);
   layer_add_child(s_window_layer, s_background_layer);
   layer_set_update_proc(s_background_layer, background_layer_update_proc);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Background layer added");
 
   // Add hour and minute hands layer
   s_hands_layer = layer_create(bounds);
   layer_add_child(s_window_layer, s_hands_layer);
   layer_set_update_proc(s_hands_layer, hands_layer_update_proc);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Hands layer added");
 
   // Subscribe to correct tick timer service
   initialize_seconds();
