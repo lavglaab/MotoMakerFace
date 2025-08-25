@@ -72,6 +72,10 @@ static void main_window_load(Window *window) {
 static void main_window_unload(Window *window) {
   layer_destroy(s_background_layer);
   layer_destroy(s_hands_layer);
+
+  tick_timer_service_unsubscribe();
+  connection_service_unsubscribe();
+
 }
 
 static void init() {
@@ -79,7 +83,7 @@ static void init() {
 
   // Listen for AppMessages
   app_message_register_inbox_received(prv_inbox_received_handler);
-  app_message_open(128, 128);
+  app_message_open(app_message_inbox_size_maximum(), 16);
 
   // Create main Window element and assign to pointer
   s_main_window = window_create();
@@ -99,7 +103,8 @@ static void init() {
 static void deinit() {
   // Destroy Window
   window_destroy(s_main_window);
-  tick_timer_service_unsubscribe();
+
+
 }
 
 int main(void) {
