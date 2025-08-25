@@ -1,7 +1,10 @@
 # MotoMakerFace
-A recreation of https://github.com/piggehperson/MotoBlackFace in C with user customization features.
+A customizable analog watch face for Pebble based on the look of the Moto 360, with plenty of color options.
+https://apps.rebble.io/en_US/application/5e9e37043dd3101b10109a01
 
-![Screenshot on aplite and diorite](https://github.com/piggehperson/MotoMakerFace/blob/master/screenshots/aplite-diorite.png)
-![Screenshot on basalt](https://github.com/piggehperson/MotoMakerFace/blob/master/screenshots/basalt.png)
-![Screenshot on chalk](https://github.com/piggehperson/MotoMakerFace/blob/master/screenshots/chalk.png)
-![Screenshot on emery](https://github.com/piggehperson/MotoMakerFace/blob/master/screenshots/emery.png)
+
+![Screenshot on aplite and diorite](./screenshots/aplite-diorite.png)
+![Screenshot on basalt](./screenshots/basalt.png)
+![Screenshot on chalk](./screenshots/chalk.png)
+![Screenshot on emery](./screenshots//emery.png)
+![Screenshot on Core Devices Pebble 2 Duo](./screenshots/core-two-duo.png)
