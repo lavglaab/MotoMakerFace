@@ -41,11 +41,11 @@ void hands_layer_update_proc(Layer *layer, GContext *ctx) {
 }
 
 void background_layer_update_proc(Layer *layer, GContext *ctx) {
-  GRect bounds = layer_get_unobstructed_bounds(layer);
-  GPoint center = grect_center_point(&bounds);
+  GRect unobstructed_bounds = layer_get_unobstructed_bounds(layer);
+  GPoint center = grect_center_point(&unobstructed_bounds);
 
   graphics_context_set_fill_color(ctx, settings.color_background);
-  graphics_fill_rect(ctx, bounds, 0, GCornerNone);
+  graphics_fill_rect(ctx, unobstructed_bounds, 0, GCornerNone);
 
   // Hour markers
   for (int hour = 0; hour < 12; hour++) {
@@ -53,31 +53,31 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
     
     if (hour == 0 && settings.enable_double_12) {
       // Do double mark at the 12 Noon position
-      draw_hand(ctx, (GPoint) {.x = center.x - HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
-      draw_hand(ctx, (GPoint) {.x = center.x + HOUR_MARK_WIDTH, .y = center.y}, 90, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+      draw_hand(ctx, (GPoint) {.x = center.x - HOUR_MARK_WIDTH, .y = center.y}, 90, 0, unobstructed_bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+      draw_hand(ctx, (GPoint) {.x = center.x + HOUR_MARK_WIDTH, .y = center.y}, 90, 0, unobstructed_bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
     } else if (hour % 3 == 0) {
       // We're at 0, 3, 6, or 9; do the thicker mark
-      draw_hand(ctx, center, angle, 0, bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
+      draw_hand(ctx, center, angle, 0, unobstructed_bounds.size.h, HOUR_MARK_WIDTH, settings.color_hour_markers, settings.color_background);
     } else {
       // Do the usual thin mark
-      draw_hand(ctx, center, angle, 0, bounds.size.h, MINUTE_MARK_WIDTH, settings.color_minute_markers, settings.color_background);
+      draw_hand(ctx, center, angle, 0, unobstructed_bounds.size.h, MINUTE_MARK_WIDTH, settings.color_minute_markers, settings.color_background);
     }
   }
 
   // erase rays beyond inset
   graphics_context_set_fill_color(ctx, settings.color_background);
   PBL_IF_ROUND_ELSE( 
-    graphics_fill_circle(ctx, center, (bounds.size.w / 2) - TICK_INSETS),
+    graphics_fill_circle(ctx, center, (unobstructed_bounds.size.w / 2) - TICK_INSETS),
     graphics_fill_rect(
       ctx,
-      GRect(TICK_INSETS, TICK_INSETS, bounds.size.w - (2 *TICK_INSETS), bounds.size.h - (2 * TICK_INSETS)),
+      GRect(TICK_INSETS, TICK_INSETS, unobstructed_bounds.size.w - (2 *TICK_INSETS), unobstructed_bounds.size.h - (2 * TICK_INSETS)),
       0,
       GCornerNone
       )
   );
 
   if (
-    layer_get_bounds(layer).size.h == bounds.size.h &&
+    unobstructed_bounds.size.h > 160 &&
     settings.enable_wordmark
   ) {
     // Draw wordmark
@@ -91,7 +91,7 @@ void background_layer_update_proc(Layer *layer, GContext *ctx) {
       ctx,
       (watch_info_get_model() > WATCH_INFO_MODEL_PEBBLE_TIME_2) ? "core" : "pebble",
       fonts_get_system_font(WORDMARK_FONT),
-      GRect(0, (TICK_INSETS * 1.5), bounds.size.w, 24),
+      GRect(0, (TICK_INSETS * 1.5), unobstructed_bounds.size.w, 24),
       GTextOverflowModeTrailingEllipsis,
       GTextAlignmentCenter,
       s_attributes
