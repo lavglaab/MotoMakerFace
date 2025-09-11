@@ -98,7 +98,7 @@ module.exports = [
       {
         "type": "color",
         "messageKey": "colorMinuteMarkers",
-        "defaultValue": "ffffff",
+        "defaultValue": "aaaaaa",
         "label": "Minute markers",
         "description": "Markers at every 5 minutes around the watch face",
       },
