@@ -9,7 +9,7 @@
   ],
   "private": true,
   "dependencies": {
-    "pebble-clay": "^1.0.4"
+    "@rebble/clay": "^1.0.6"
   },
   "pebble": {
     "capabilities": [
@@ -24,7 +24,8 @@
       "basalt",
       "chalk",
       "diorite",
-      "emery"
+      "emery",
+      "flint"
     ],
     "watchapp": {
       "watchface": true
