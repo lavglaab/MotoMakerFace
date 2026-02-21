@@ -3,8 +3,11 @@ A customizable analog watch face for Pebble based on the look of the Moto 360, w
 https://apps.rebble.io/en_US/application/5e9e37043dd3101b10109a01
 
 
-![Screenshot on aplite and diorite](./screenshots/aplite-diorite.png)
-![Screenshot on basalt](./screenshots/basalt.png)
-![Screenshot on chalk](./screenshots/chalk.png)
-![Screenshot on emery](./screenshots//emery.png)
-![Screenshot on Core Devices Pebble 2 Duo](./screenshots/core-two-duo.png)
+![Screenshot on aplite and diorite](./screenshots/aplite-diorite/dark.png)
+![Screenshot on basalt](./screenshots/basalt/dark.png)
+![Screenshot on chalk](./screenshots/chalk/dark.png)
+
+
+![Screenshot on flint](./screenshots/flint/dark.png)
+![Screenshot on emery](./screenshots/emery/obelix-dark.png)
+![Screenshot on gabbro](./screenshots/gabbro/dark.png)
